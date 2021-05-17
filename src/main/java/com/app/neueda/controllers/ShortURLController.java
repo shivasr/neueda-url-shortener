@@ -6,8 +6,13 @@ import com.app.neueda.model.URLMappingRecord;
 import com.app.neueda.services.ShortURLService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.net.URI;
 
 /**
  * REST API controller to host web services to create a short URL and also redirect short URL to original advertised
@@ -33,19 +38,30 @@ public class ShortURLController {
     // POST /
     @PostMapping("/")
     public @ResponseBody
-    URLMappingRecord generateURL(@RequestBody RequestURL requestBody) {
-        logger.debug(String.format("Got Generate URL request for original URL: %s", requestBody.getUrl()));
+    ResponseEntity<Object> generateURL(@RequestBody RequestURL requestBody) {
+        try {
+            logger.debug(String.format("Got Generate URL request for original URL: %s", requestBody.getUrl()));
 
-        // Create a new short URL object for persistence
-        URLMappingRecord newURLMappingRecord = URLMappingRecord.builder()
-                .originalURL(requestBody.getUrl())
-                .build();
+            if(requestBody.getUrl() == null && requestBody.getUrl().isEmpty())
+                throw new ApplicationException("URL is null or empty.");
 
-        // Saved object containing short URL mapped to the URL in the request.
-        newURLMappingRecord = shortURLService.save(newURLMappingRecord);
+            // Create a new short URL object for persistence
+            URLMappingRecord newURLMappingRecord = URLMappingRecord.builder()
+                    .originalURL(requestBody.getUrl())
+                    .build();
 
-        logger.debug(String.format("Returning the short URL: %s", newURLMappingRecord.getShortURL()));
-        return newURLMappingRecord;
+            // Saved object containing short URL mapped to the URL in the request.
+            newURLMappingRecord = shortURLService.save(newURLMappingRecord);
+
+            logger.debug(String.format("Returning the short URL: %s", newURLMappingRecord.getShortURL()));
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(newURLMappingRecord);
+        } catch (Exception e) {
+            logger.error("Error while creating the short URL. ", e);
+        }
+
+        return ResponseEntity.badRequest().build();
     }
 
     // GET /<hashcode>
