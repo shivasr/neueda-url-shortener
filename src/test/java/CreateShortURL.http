@@ -1,0 +1,12 @@
+POST http://localhost:8080/
+Content-Type: application/json
+
+{
+  "url": "https://www.google.com/search?q=shivakumar+ramannavar&rlz=1C1GCEO_enIE945IE945&oq=shivakumar+ramannavar&aqs=chrome..69i57j69i61.5793j0j7&sourceid=chrome&ie=UTF-8"
+}
+
+###
+GET http://localhost:8080/3ibJF4B
+Accept: text/html
+
+###

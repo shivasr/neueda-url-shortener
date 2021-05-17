@@ -1,5 +1,5 @@
 # Neueda URL Shortener
-This is a Spring project demonstrating URL shortener.
+This is a Spring project demonstrating URL shortener. This is a dockerized solution . The docker image is available in the docker hub at: docker build . --file Dockerfile --tag shivasr/neueda-url-shortener:1.0.0.
 
 ## How this works
 This application is developed using Spring boot framework and launches a server at port, say 8080 and exposes the two REST API endpoints:
@@ -40,15 +40,14 @@ the endpoint "/":
 ```http request
 POST http://localhost:8080/
 Content-Type: application/json
-Body:
 
 {
-    "url": "https://www.google.com/search?q=shivakumar+ramannavar&rlz=1C1GCEO_enIE945IE945&oq=shivakumar+ramannavar&aqs=chrome..69i57j69i61.5793j0j7&sourceid=chrome&ie=UTF-8"
+  "url": "https://www.google.com/search?q=shivakumar+ramannavar&rlz=1C1GCEO_enIE945IE945&oq=shivakumar+ramannavar&aqs=chrome..69i57j69i61.5793j0j7&sourceid=chrome&ie=UTF-8"
 }
 ```
 
 The below is the response:
-```http request
+```
 {
     "id": 1,
     "originalURL": "https://www.google.com/search?q=shivakumar+ramannavar&rlz=1C1GCEO_enIE945IE945&oq=shivakumar+ramannavar&aqs=chrome..69i57j69i61.5793j0j7&sourceid=chrome&ie=UTF-8",
@@ -57,4 +56,9 @@ The below is the response:
 ```
 
 ### Use the short URL
-Using a suitable http browser navigate to the short URL http://localhost:8080/3ibJF44 and you can see the server redirects you to the original URL you supplied. 
+Using a suitable http browser navigate to the short URL http://localhost:8080/3ibJF44 and you can see the server redirects you to the original URL you supplied.
+
+```http request
+GET http://localhost:8080/3ibJF4B
+Accept: text/html
+```

@@ -1,4 +1,4 @@
-package com.app.neueda.utils;
+package com.app.neueda.logic;
 
 import com.app.neueda.logic.Base62URLGenerator;
 import com.app.neueda.model.URLMappingRecord;
