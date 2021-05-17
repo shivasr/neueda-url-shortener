@@ -1,5 +1,5 @@
 # Neueda URL Shortener
-This is a Spring project demonstrating URL shortener.
+This is a Spring project demonstrating URL shortener. This is a dockerized solution . The docker image is available in the docker hub at: docker build . --file Dockerfile --tag shivasr/neueda-url-shortener:1.0.0.
 
 ## How this works
 This application is developed using Spring boot framework and launches a server at port, say 8080 and exposes the two REST API endpoints:
