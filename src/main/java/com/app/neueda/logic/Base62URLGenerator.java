@@ -9,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 /**
  * Base62 implementation of URLGenerator.
@@ -26,22 +27,32 @@ public class Base62URLGenerator implements URLGenerator {
         base62 = Base62.createInstance();
     }
     @Override
-    public String generateShortURL(long id) {
+    public Optional<String> generateShortURL(long id) {
 
         assert id > 0 : String.format("Invalid id - %o", id);
 
         String canonicalId = generateCanonicalId(id);
 
         final byte[] encoded = base62.encode(canonicalId.getBytes(StandardCharsets.UTF_8));
-        return new String(encoded);
+        String encodedString = new String(encoded);
+
+        // Return optional
+        return Optional.of(encodedString);
     }
 
     @Override
-    public Long retrieveURLMappingId(String hashcode) {
-        return decodeHashCode(hashcode);
+    public Optional<Long> retrieveURLMappingId(String hashcode) {
+        Long id = null;
+
+        try{
+            id = decodeHashCode(hashcode);
+        } catch(Exception e) {
+            // Do nothing
+        }
+        return Optional.ofNullable(id);
     }
 
-    private Long decodeHashCode(String urlCode) {
+    private Long decodeHashCode(String urlCode) throws NumberFormatException {
 
         // Assert the url code is not null
         assert urlCode != null : "urlCode is null";

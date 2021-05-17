@@ -1,5 +1,7 @@
 package com.app.neueda.logic;
 
+import java.util.Optional;
+
 /**
  * Interface for URL generator.
  *
@@ -13,14 +15,14 @@ public interface URLGenerator {
      * @param id Unique identifier to the URL mapping record
      * @return Encoded code to be appended to the baseURL
      */
-    String generateShortURL(long id);
+    Optional<String> generateShortURL(long id);
 
     /**
      * Method to decode hashcode to get back ID
      * @param urlCode base62 encoded Id
      * @return Id Unique identifier to the URL mapping record
      */
-    Long retrieveURLMappingId(String urlCode);
+    Optional<Long> retrieveURLMappingId(String urlCode);
 
 
 }

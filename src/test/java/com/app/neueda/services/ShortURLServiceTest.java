@@ -5,9 +5,10 @@ import com.app.neueda.logic.Base62URLGenerator;
 import com.app.neueda.logic.URLGenerator;
 import com.app.neueda.model.URLMappingRecord;
 import com.app.neueda.repository.ShortURLRepository;
+
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -19,8 +20,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-@RunWith(SpringRunner.class)
-class ShortURLServiceTest {
+public class ShortURLServiceTest {
 
     ShortURLRepository repository;
 
@@ -37,7 +37,7 @@ class ShortURLServiceTest {
     }
 
     @Test
-    void save() {
+    public void save() {
 
         String originalURL = "www.google.com";
         String expectedURL = "http://localhost/3ibJF44";
@@ -58,14 +58,19 @@ class ShortURLServiceTest {
         Mockito.when(repository.save(mappingRecord)).thenReturn(savedMappingRecord);
 
         ShortURLService shortURLService = new ShortURLService(urlGenerator, repository);
-        URLMappingRecord verifiedMappingRecord = shortURLService.save(mappingRecord);
+        URLMappingRecord verifiedMappingRecord;
+        try {
+            verifiedMappingRecord = shortURLService.save(mappingRecord);
+        } catch (ApplicationException e) {
+            verifiedMappingRecord = new URLMappingRecord();
+        }
 
         assertEquals(expectedURL, verifiedMappingRecord.getShortURL() );
 
     }
 
     @Test
-    void getMappedURL() {
+    public void getMappedURL() {
         ShortURLService shortURLService = new ShortURLService(urlGenerator, repository);
         try {
             String originalURL = "www.google.com";

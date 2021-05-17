@@ -41,17 +41,19 @@ public class ShortURLService {
      * @param URLMappingRecord ShortURL object containing the actual URL to map.
      * @return ShortURL object containing the generated short URL.
      */
-    public URLMappingRecord save(URLMappingRecord URLMappingRecord) {
+    public URLMappingRecord save(URLMappingRecord URLMappingRecord) throws ApplicationException {
         // Create a mapping record for the give URL and fetch the ID.
         URLMappingRecord updatedURLMappingRecord = repository.save(URLMappingRecord);
 
         // Generate short URL using Base62 encoding method.
-        String generatedShortURL = urlGenerator.generateShortURL(updatedURLMappingRecord.getId());
+        String generatedShortURL = urlGenerator
+                .generateShortURL(updatedURLMappingRecord.getId())
+                .orElseThrow(() -> new ApplicationException("Unable to generate URL Code."));
 
         // Set the generatedURL
         final String baseUrl =
                 ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
-        URLMappingRecord.setShortURL(new StringBuffer(baseUrl).append("/").append(generatedShortURL).toString());
+        URLMappingRecord.setShortURL(baseUrl + "/" + generatedShortURL);
         logger.debug(String.format("Mapped URL: %s", URLMappingRecord.getShortURL()));
         return repository.save(URLMappingRecord);
     }
@@ -69,14 +71,14 @@ public class ShortURLService {
         logger.debug(String.format("Got mapping request for the code: %s", urlCode));
 
         // Retrieve the ID from the URL code
-        Long id = urlGenerator.retrieveURLMappingId(urlCode);
+        Long id = urlGenerator.retrieveURLMappingId(urlCode).orElseThrow(() -> new ApplicationException(String.format("Invalid code: %s", urlCode)));
         logger.debug(String.format("ID retrieved is: %o", id));
 
         // Get the URL Mapping record
         URLMappingRecord URLMappingRecord = repository.findById(id).orElseThrow(() -> new ApplicationException(String.format("Unknown short URL: %s", urlCode)));
 
         // Return the original URL for redirection.
-        logger.debug(String.format(String.format("Got mapped original URL: %s", URLMappingRecord.getOriginalURL())));
+        logger.debug(String.format("Got mapped original URL: %s", URLMappingRecord.getOriginalURL()));
         return URLMappingRecord.getOriginalURL();
     }
 }

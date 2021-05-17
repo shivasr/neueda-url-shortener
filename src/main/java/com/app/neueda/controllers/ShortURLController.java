@@ -19,6 +19,8 @@ import java.net.URI;
  * location.
  */
 @RestController
+@RequestMapping(value="/",
+        produces=MediaType.APPLICATION_JSON_VALUE)
 public class ShortURLController {
 
     Logger logger = LoggerFactory.getLogger(ShortURLController.class);
@@ -42,7 +44,7 @@ public class ShortURLController {
         try {
             logger.debug(String.format("Got Generate URL request for original URL: %s", requestBody.getUrl()));
 
-            if(requestBody.getUrl() == null && requestBody.getUrl().isEmpty())
+            if(requestBody.getUrl() == null || requestBody.getUrl().isEmpty())
                 throw new ApplicationException("URL is null or empty.");
 
             // Create a new short URL object for persistence
@@ -74,8 +76,9 @@ public class ShortURLController {
             return new ModelAndView("redirect:" + url);
         } catch (ApplicationException e) {
             logger.error(String.format("Error occurred while looking up for encoded URL: %s", urlCode));
+            ModelAndView modelAndView = new ModelAndView(url);
+            modelAndView.setStatus(HttpStatus.BAD_REQUEST);
+            return modelAndView;
         }
-
-        return new ModelAndView(url);
     }
 }
