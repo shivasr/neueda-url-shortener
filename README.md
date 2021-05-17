@@ -49,7 +49,7 @@ docker run -p 8080:5000 shivasr/neueda-url-shortener:1.0.0
 
 ### Create a short URL
 
-Once the solution is deployed using a REST API client such as postman create a URL mapping record by posting a JSON to 
+Once the solution is deployed as previous step, using a REST API client, such as postman, create a URL mapping record by posting a JSON to 
 the endpoint "/":
 
 ```http request
