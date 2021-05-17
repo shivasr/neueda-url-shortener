@@ -9,9 +9,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+/**
+ * Service class to manage the generation of Short URLs.
+ */
 @Service
 public class ShortURLService {
 
+    // Logger
     Logger logger = LoggerFactory.getLogger(ShortURLService.class);
 
     // JPA repository to create/read/update/delete url data
@@ -66,6 +70,7 @@ public class ShortURLService {
 
         // Retrieve the ID from the URL code
         Long id = urlGenerator.retrieveURLMappingId(urlCode);
+        logger.debug(String.format("ID retrieved is: %o", id));
 
         // Get the URL Mapping record
         URLMappingRecord URLMappingRecord = repository.findById(id).orElseThrow(() -> new ApplicationException(String.format("Unknown short URL: %s", urlCode)));
